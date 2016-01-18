@@ -17,8 +17,14 @@ class Dbug{
 		// set path to logs
 		self::$LOG_PATH = get_log_path();
 		
+		// set max filesize of logs
+		self::$LOG_FILESIZE = get_log_filesize(); 
+
+		//
+		self::$error_handler = set_error_handler();
+
 		// set default error handling to screen to logs
- 		self::set_error_handler();
+ 		self::set_error_level();
  	}
  	
  	/*
@@ -34,26 +40,15 @@ class Dbug{
 		if( self::$error_handler == 'log' )
 			return self::delog( $v, $k, 'dbug' );
 		
-		self::$html = '<div class="dbug">';
-		
 		self::debug_value_html( $k, $v, 0 );
 		
-		if( $t ){
-			$bt = self::get_backtrace( $t );
-			
-			self::$html .= '<span class="backtrace"><strong>backtrace:</strong></span><br/>';
+		$backtrace = $t ? self::get_backtrace( $t ) : [];
+		
+		echo render( 'dbug', [
+			'error' => self::$html,
+			'backtrace' => $backtrace
+		] );
 
-			foreach( $bt as $debug ){
-				self::$html .= '<span class="backtrace">
-									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
-									$debug['file'].' line '.$debug['line'].'
-								</span><br/>'."\r\n";
-			}
-		}
-		
-		self::$html .= "</div>\n\n";
-		
-		echo self::$html;
 		self::$html = '';
 	}
 	
@@ -128,9 +123,7 @@ class Dbug{
 		}
 		
 		// dont display arrays/objects as key
-		if( is_int($k) )
-			$k = strval( $k );
-		elseif( is_float($k) )
+		if( is_int($k) || is_float($k) )
 			$k = strval( $k );
 		elseif( !is_string($k) )
 			$k = '?';
@@ -231,14 +224,10 @@ class Dbug{
 	}
 	
 	/*
-	*	catch all php errors with dbug
-   	*	write to a log file if we are on production, screen otherwise.
+	*	
    	*	@return
    	*/
-	private static function set_error_handler(){
-		// set max filesize of logs
-		self::$LOG_FILESIZE = get_log_filesize(); 
-		
+	private static function set_error_level(){
 		// get the saved error level and calculate val
 		$error_level = 0;
 		$error_levels = get_option( 'dbug_error_level' );
@@ -250,6 +239,6 @@ class Dbug{
 			}	
 		}
 
-		self::$error_handler = set_error_handler();
+		//@TODO what happends to $error_level ??
 	}
 }
