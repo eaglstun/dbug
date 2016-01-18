@@ -21,12 +21,12 @@ function admin_menu(){
 		
 		// update dbug_log_path
 		if( isset($_POST['dbug_error_level']) ){
-			self::update_option( 'dbug_error_level', $_POST['dbug_error_level'] );
+			update_option( 'dbug_error_level', $_POST['dbug_error_level'] );
 		}
 		
 		// update screen or logs
 		if( isset($_POST['dbug_logging']) ){
-			self::update_option( 'dbug_logging', $_POST['dbug_logging'] );
+			update_option( 'dbug_logging', $_POST['dbug_logging'] );
 		}
 		
 		// update dbug_log_path
@@ -35,14 +35,14 @@ function admin_menu(){
 			
 			$dir = $_POST['dbug_log_path'];
 			$dir = check_log_dir( $dir );
-			self::update_option( 'dbug_log_path', $dir );
+			update_option( 'dbug_log_path', $dir );
 		}
 		
 		// update log filesize
 		if( isset($_POST['dbug_log_filesize']) ){
 			$megabytes = (float) $_POST['dbug_log_filesize'];
 			$bytes = $megabytes * 1024 * 1024;
-			self::update_option( 'dbug_log_filesize', $bytes );
+			update_option( 'dbug_log_filesize', $bytes );
 		}
 	}
 }

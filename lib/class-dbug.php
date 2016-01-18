@@ -169,12 +169,12 @@ class Dbug{
 	  		// there is a problem with get_class on certain objects...
 			self::$html .= ( $k . " = <strong>Class</strong> $v_class:<br/>\n" );
 			
-			$RC = new ReflectionClass( $v );
+			$RC = new \ReflectionClass( $v );
 			
 			$properties = $RC->getProperties();
 			self::$html .= count($properties) ." properties:<br/>\n";
 			foreach( $properties as $k1 => $v1 ){
-				$type = self::getType($v1);
+				$type = get_type($v1);
 				
 				$property_mockup = array();
 				
@@ -189,7 +189,7 @@ class Dbug{
 			$methods = $RC->getMethods();
 			self::$html .= count($methods) ." methods:<br/>\n";
 			foreach( $methods as $k1 => $v1 ){
-				$type = self::getType($v1);
+				$type = get_type($v1);
 				
 				$params = $v1->getParameters();
 				$params = implode( ', ', $params );
@@ -230,36 +230,6 @@ class Dbug{
 		}
 	}
 	
-	/* 
-	*	get the type of method or property.  is there a better way to do this?
-	*	@param ReflectionMethod|ReflectionProperty
-	*	@return string
-	*/
-	private static function getType( $r ){
-		if( $r->isPublic() )
-			$type = 'public';
-		elseif( $r->isPrivate() )
-			$type = 'private';
-		elseif( $r->isProtected() )
-			$type = 'protected';
-		
-		if( $r instanceof ReflectionProperty )
-			return $type;
-		
-		// ReflectionMethod only below
-		
-		if( $r->isStatic() )
-			$type =  "static $type";
-		
-		if( $r->isAbstract() )
-			$type =  "abstract $type";
-		
-		if( $r->isFinal() )
-			$type =  "final $type";
-				
-		return $type;
-	}
-	
 	/*
 	*	catch all php errors with dbug
    	*	write to a log file if we are on production, screen otherwise.
@@ -273,27 +243,13 @@ class Dbug{
 		$error_level = 0;
 		$error_levels = get_option( 'dbug_error_level' );
 		
-		if( is_array($error_levels) )
+		if( is_array($error_levels) ){
 			foreach( $error_levels as $e_level ){
 				//echo "$error_level | $e_level<br/>\n";
 				$error_level = $error_level | $e_level;
 			}	
-		
-		// whether to output errors or log to file
-		$logging = get_option( 'dbug_logging' );
-		switch($logging){
-			case 'log':
-				set_error_handler( __NAMESPACE__.'\handle_error_log', $error_level );
-				self::$error_handler = 'log';
-				return;
-				break;
-			case 'screen':
-			default:
-				add_action( 'init', __NAMESPACE__.'\register_styles' );
-				set_error_handler( __NAMESPACE__.'\handle_error_screen', $error_level );
-				self::$error_handler = 'screen';
-				return;
-				break;
 		}
+
+		self::$error_handler = set_error_handler();
 	}
 }

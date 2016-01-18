@@ -52,6 +52,36 @@ function file_set( $e ){
 		return $e;
 }
 
+/* 
+*	get the type of method or property.  is there a better way to do this?
+*	@param ReflectionMethod | ReflectionProperty
+*	@return string
+*/
+function get_type( $r ){
+	if( $r->isPublic() )
+		$type = 'public';
+	elseif( $r->isPrivate() )
+		$type = 'private';
+	elseif( $r->isProtected() )
+		$type = 'protected';
+	
+	if( $r instanceof \ReflectionProperty )
+		return $type;
+	
+	// ReflectionMethod only below
+	
+	if( $r->isStatic() )
+		$type =  "static $type";
+	
+	if( $r->isAbstract() )
+		$type =  "abstract $type";
+	
+	if( $r->isFinal() )
+		$type =  "final $type";
+			
+	return $type;
+}
+
 /*
 *	gets the max filesize of logs in bytes
 *	@return int
@@ -132,6 +162,29 @@ function render( $_template, $vars = array() ){
 	ob_end_clean();
 	
 	return $html;
+}
+
+/*
+*	whether to output errors or log to file
+*	@return string 'log' or 'screen'
+*/
+function set_error_handler(){
+	$logging = get_option( 'dbug_logging' );
+
+	switch( $logging ){
+		case 'log':
+			\set_error_handler( __NAMESPACE__.'\handle_error_log', $error_level );
+			self::$error_handler = 'log';
+			return 'log';
+			break;
+
+		case 'screen':
+		default:
+			add_action( 'init', __NAMESPACE__.'\register_styles' );
+			\set_error_handler( __NAMESPACE__.'\handle_error_screen', $error_level );
+			return 'screen';
+			break;
+	}
 }
 
 /*
