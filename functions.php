@@ -7,13 +7,14 @@ namespace wp_dbug;
 *	default to /logs/ in wordpress root
 *	@TODO find a better way to make sure the path is writeable and valid
 *	@TODO fix error when log path is not on same server.
-*	@TODO set up htaccess to copy from current directory ( mu compat )
 *	@param string
 *	@return string absolute path to directory or FALSE
 */
 function check_log_dir( $dir ){
-	if( !is_dir($dir) )
-		$dir = ABSPATH.'logs/';
+	if( !is_dir($dir) ){
+		$wp_upload_dir = wp_upload_dir();
+		$dir = $wp_upload_dir['basedir'].'/logs/';
+	}
 	
 	$pathinfo = pathinfo( $dir );
 	$dirname = isset( $pathinfo['dirname'] ) ? $pathinfo['dirname'] : NULL;
@@ -26,7 +27,7 @@ function check_log_dir( $dir ){
 	
 	// make directory if it doesnt exist
 	if( !is_dir($dir) )
-		@mkdir( $dir, 0755 );
+		wp_mkdir_p( $dir, 0755 );
 	
 	// change permissions if we cant write to it
 	if( !is_writable($dir) )	
@@ -40,7 +41,7 @@ function check_log_dir( $dir ){
 	if( !file_exists($dir.'.htaccess') && file_exists(__DIR__.'/_htaccess.php') ) 
 		copy( __DIR__.'/_htaccess.php',
 			  $dir.'.htaccess' );
-		  
+	 
 	return $dir;
 }
 
