@@ -1,0 +1,19 @@
+/*
+Version: 1.89
+*/
+
+div.dbug {
+	background-color: #fff;
+	border: 1px solid #f00;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, .5);
+	color: #333;
+	font-size: 1em;
+	line-height: 1.2;
+	margin: 1em;
+	padding: 1em;
+	text-align: left;
+}
+div.dbug .backtrace {
+	color: #666;
+	font-size: .8em;
+}
