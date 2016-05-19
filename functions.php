@@ -175,7 +175,6 @@ function set_error_handler(){
 	switch( $logging ){
 		case 'log':
 			\set_error_handler( __NAMESPACE__.'\handle_error_log', $error_level );
-			self::$error_handler = 'log';
 			return 'log';
 			break;
 

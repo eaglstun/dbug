@@ -16,7 +16,7 @@ function admin_menu(){
 		// remove empty posts
 		$allowed = array( 'dbug_error_level', 'dbug_logging', 'dbug_log_path' );
 		foreach( $allowed as $allow ){
-			if( !isset($_POST[$allow]) ) self::delete_option( $allow );
+			if( !isset($_POST[$allow]) ) delete_option( $allow );
 		}
 		
 		// update dbug_log_path
