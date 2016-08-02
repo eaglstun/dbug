@@ -165,16 +165,16 @@ function render( $_template, $vars = array() ){
 	return $html;
 }
 
-/*
+/**
 *	whether to output errors or log to file
 *	@return string 'log' or 'screen'
 */
 function set_error_handler(){
-	$error_level = get_option( 'dbug_error_level' ); 
-	$error_level = array_reduce( $error_level, function($a, $b){ 
-		return $a | $b; 
+	$error_level = (array) get_option( 'dbug_error_level' ); 
+	$error_level = array_reduce( $error_level, function($a, $b){
+		return $a | intval( $b ); 
 	}, 0 );
-	
+
 	$logging = get_option( 'dbug_logging' );
 
 	switch( $logging ){
