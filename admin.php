@@ -97,6 +97,7 @@ function menu(){
 		E_WARNING => '',
 		E_NOTICE => '',
 		E_STRICT => '',
+		E_USER_DEPRECATED => '',
 		E_ALL => ''
 	);
 	
