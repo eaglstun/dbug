@@ -1,6 +1,6 @@
 <?php 
 
-namespace wp_dbug;
+namespace WP_Dbug;
 
 if( is_admin() )
 	require __DIR__.'/admin.php';

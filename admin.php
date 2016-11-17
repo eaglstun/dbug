@@ -1,6 +1,6 @@
 <?php
 
-namespace wp_dbug;
+namespace WP_Dbug;
 
 /*
 *	setup page for dbug settings

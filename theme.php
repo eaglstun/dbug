@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
 *	output debug information to screen
 *	@param mixed
 *	@param string optional
@@ -13,11 +13,11 @@ function dbug( $v = null, $k = null, $trace = 1 ){
 		$k = 'DEBUG';
 	}
 	
-	wp_dbug\Dbug::debug( $v, $k, $trace );
+	WP_Dbug\Dbug::debug( $v, $k, $trace );
 	return;
 }
 
-/*
+/**
 *	write debug information to log
 *	@param mixed
 *	@param string optional
@@ -29,11 +29,11 @@ function dlog( $v = null, $k = null, $file = 'dlog' ){
 		$k = 'DEBUG';
 	}
 	
-	wp_dbug\Dbug::delog( $v, $k, $file );
+	WP_Dbug\Dbug::delog( $v, $k, $file );
 	return;
 }
 
-/*
+/**
 *	dbug and die
 *	@param mixed
 *	@param string optional
@@ -47,11 +47,11 @@ function ddbug( $v = null, $k = null, $trace = 1 ){
 		$k = 'DEBUG';
 	}
 	
-	wp_dbug\Dbug::debug( $v, $k, $trace );
+	WP_Dbug\Dbug::debug( $v, $k, $trace );
 	die();
 }
 
-/*
+/**
 *	dlog and die
 *	@param mixed
 *	@param string optional
@@ -65,6 +65,6 @@ function ddlog( $v = null, $k = null, $file = 'dlog' ){
 		$k = 'DEBUG';
 	}
 	
-	wp_dbug\Dbug::delog( $v, $k, $file );
+	WP_Dbug\Dbug::delog( $v, $k, $file );
 	die();
 }
