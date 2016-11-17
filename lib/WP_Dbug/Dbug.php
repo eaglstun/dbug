@@ -1,6 +1,6 @@
 <?php 
 
-namespace wp_dbug;
+namespace WP_Dbug;
 
 class Dbug{
 	private static $error_handler = 'screen';	// or 'log'
@@ -9,7 +9,7 @@ class Dbug{
  	private static $LOG_PATH = '';				// absolute path to logs on server
  	private static $LOG_FILESIZE = 1048576;		// in bytes 1048576 = 1 megabyte
  	
- 	/*
+ 	/**
  	*	sets up log path, error handling, admin screens
  	*	@return NULL
  	*/
@@ -27,7 +27,7 @@ class Dbug{
  		self::set_error_level();
  	}
  	
- 	/*
+ 	/**
  	*	output debug info to screen
  	*	@param mixed
  	*	@param string|int
@@ -52,9 +52,9 @@ class Dbug{
 		self::$html = '';
 	}
 	
-	/*
+	/**
 	*	
-	*	TODO: if we can not write to the log directory, handle the failure in a way that lets the site admin know
+	*	@TODO: if we can not write to the log directory, handle the failure in a way that lets the site admin know
 	*	@param
 	*	@param
 	*	@param string
@@ -92,7 +92,7 @@ class Dbug{
 		}
 	}
 	
-	/*
+	/**
 	*	removes the `dbug` elements from backtrace
 	*	
 	*	@param int
@@ -109,13 +109,13 @@ class Dbug{
 		return $bt;
 	}
 	
-	/*
+	/**
 	*
 	*	@param 
 	*	@param
 	*	@param
 	*	@param
-	*	@bool
+	*	@return
 	*/
 	public static function debug_value_html( $k, $v, $indent, $hack = FALSE ){
 		if( $indent > 100 ){
@@ -210,7 +210,7 @@ class Dbug{
 		}
 	}
 	
-	/*
+	/**
 	*	add any number of non breaking spaces (&npsp;) to html
 	*	@param int
 	*	@return
@@ -223,7 +223,7 @@ class Dbug{
 		}
 	}
 	
-	/*
+	/**
 	*	
    	*	@return
    	*/

@@ -1,6 +1,6 @@
 <?php
 
-namespace wp_dbug;
+namespace WP_Dbug;
 
 /*
 *	create the log directory if it does not exist
