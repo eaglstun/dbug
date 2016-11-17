@@ -2,8 +2,8 @@
 Contributors: postpostmodern
 Donate link: http://www.heifer.org/
 Tags: debug, error log
-Requires at least: 3.2
-Tested up to: 3.6
+Requires at least: 4.0
+Tested up to: 4.6.1
 Stable tag: trunk
 
 Simple error debugging and logging functions.
