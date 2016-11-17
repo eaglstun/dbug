@@ -1,0 +1,14 @@
+{
+    "name": "pinecone-dot-website/dbug",
+    "type": "wordpress-plugin",
+    "license": "",
+    "authors": [
+        {
+          "name": "Eric Eaglstun",
+          "email": "postpostmodern@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3"
+    }
+}
