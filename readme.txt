@@ -23,6 +23,9 @@ dbug() dlog() ddbug()
 
 == Changelog ==
 
+= 1.9.2 = 
+Add composer info, autoload
+
 = 1.9 =
 Log viewer in admin
 
