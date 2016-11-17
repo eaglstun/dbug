@@ -191,31 +191,3 @@ function set_error_handler(){
 			break;
 	}
 }
-
-/*
-*	wrapper for single/mu delete_option/delete_blog_option
-*	deletes options for all blogs in blog #1 for mu
-*	@param string
-*/
-function delete_option( $key ){
-	return is_multisite() ? \delete_blog_option( 1, $key ) : \delete_option( $key );
-}
-
-/*
-*	wrapper for single/mu get_option/get_blog_option
-*	gets options for all blogs in blog #1 for mu
-*	@param string
-*/
-function get_option( $key ){
-	return is_multisite() ? \get_blog_option( 1, $key ) : \get_option( $key );
-}
-	
-/*
-*	wrapper for single/mu update_option/update_blog_option
-*	updates options for all blogs in blog #1 for mu
-*	@param string
-*	@param mixed
-*/
-function update_option( $key, $val ){
-	return is_multisite() ? \update_blog_option( 1, $key, $val ) : \update_option( $key, $val );
-}
