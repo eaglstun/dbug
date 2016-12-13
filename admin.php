@@ -48,7 +48,7 @@ function admin_menu(){
 }
 add_action( 'admin_menu', __NAMESPACE__.'\admin_menu' );
 
-/*
+/**
 *
 */
 function route(){
@@ -62,7 +62,7 @@ function route(){
 	}
 }
 
-/*
+/**
 *	add direct link to 'Settings' in plugins table - plugins.php
 *	attached to 'plugin_action_links_dbug/dbug.php' action
 *	@param array
@@ -76,7 +76,7 @@ function plugin_action_links( $links ){
 }
 add_filter( 'plugin_action_links_dbug/dbug.php', __NAMESPACE__.'plugin_action_links' );
 
-/*
+/**
 *	settings page in wp-admin
 *	callback for `add_options_page`
 */
@@ -89,7 +89,8 @@ function menu(){
 							'log' => ''
 						   ),
 		'dbug_log_path' => $log_path,
-		'path' => plugins_url('public/', __FILE__)
+		'path' => plugins_url( 'public/', __FILE__ ),
+		'version' => get_file_data( __DIR__.'/_plugin.php', array('Version'), 'plugin' )
 	);
 	
 	// possible values
@@ -136,8 +137,10 @@ function menu(){
 	echo render( 'admin/options-general', $vars );
 }
 
-/*
+/**
 *
+*	@param
+*	@return
 */
 function view_log( $log_file ){
 	$log_path = get_log_path();

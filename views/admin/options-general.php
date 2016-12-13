@@ -1,11 +1,6 @@
-<?php
-/*
-*	Version: 1.9
-*/
-?>
 <div class="wrap">
 	<h2>dbug</h2>
-	<h6>Version: 1.9</h6>
+	<h6>Version: <?php echo $version[0]; ?></h6>
 	
 	<form action="" method="post" class="dbug">
 		<div>

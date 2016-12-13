@@ -4,7 +4,7 @@ Plugin Name: dbug
 Plugin URI: https://wordpress.org/extend/plugins/dbug/
 Description: Helps with Dev'n
 Author: Eric Eaglstun
-Version: 1.9.2
+Version: 1.9.3
 Author URI: http://ericeaglstun.com
 
 This file must be parsable by php 5.2
