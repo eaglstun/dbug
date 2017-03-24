@@ -2,11 +2,11 @@
 
 namespace WP_Dbug;
 
-/*
+/**
 *	create the log directory if it does not exist
-*	default to /logs/ in wordpress root
-*	@TODO find a better way to make sure the path is writeable and valid
-*	@TODO fix error when log path is not on same server.
+*	default to /logs/ in wordpress uploads dir
+*	@todo find a better way to make sure the path is writeable and valid
+*	@todo fix error when log path is not on same server.
 *	@param string
 *	@return string absolute path to directory or FALSE
 */
@@ -45,7 +45,7 @@ function check_log_dir( $dir ){
 	return $dir;
 }
 
-/*
+/**
 *	array_map callback
 */
 function file_set( $e ){
@@ -53,7 +53,7 @@ function file_set( $e ){
 		return $e;
 }
 
-/* 
+/**
 *	get the type of method or property.  is there a better way to do this?
 *	@param ReflectionMethod | ReflectionProperty
 *	@return string
@@ -83,7 +83,7 @@ function get_type( $r ){
 	return $type;
 }
 
-/*
+/**
 *	gets the max filesize of logs in bytes
 *	@return int
 */
@@ -94,7 +94,7 @@ function get_log_filesize(){
 	return $dbug_log_filesize;
 }
 
-/*
+/**
 *	gets the saved path to log files and creates if doesnt exist
 *	@return string absolute path to directory or FALSE
 */
@@ -104,7 +104,7 @@ function get_log_path(){
 	return check_log_dir( $path );
 }
 
-/*
+/**
 *	catch all php errors to log file rather than screen
 *	usually only enabled on production
 *	@param
@@ -120,7 +120,7 @@ function handle_error_log( $err_no, $err_str, $err_file, $err_line ){
 	return TRUE;
 }
 
-/*
+/**
 *	catch all php errors to screen rather than log file
 *	usually only enabled on development
 *	@param
@@ -135,7 +135,7 @@ function handle_error_screen( $err_no, $err_str, $err_file, $err_line ){
 	return TRUE;
 }
 
-/*
+/**
 *	register fancy styles for screen
 *	attached to `init` action
 */
@@ -144,7 +144,7 @@ function register_styles(){
 	wp_enqueue_style( 'dbugStyle' );
 }
 
-/* 
+/**
 *	render a page into wherever
 *	@param string
 *	@param object|array
