@@ -1,17 +1,24 @@
 {
     "name": "pinecone-dot-website/dbug",
     "type": "wordpress-plugin",
-    "license": "",
+    "license": "GPL-2.0+",
     "authors": [
         {
-          "name": "Eric Eaglstun",
-          "email": "postpostmodern@gmail.com"
+            "name": "Eric Eaglstun",
+            "email": "postpostmodern@gmail.com"
         }
     ],
     "autoload": {
-        "psr-4": {"WP_Dbug\\": "lib/WP_Dbug/"}
+        "files": [
+            "functions.php",
+            "theme.php"
+        ],
+        "psr-4": {
+            "WP_Dbug\\": "lib/WP_Dbug/"
+        }
     },
     "require": {
-        "php": ">=5.3"
+        "php": ">=5.3",
+        "composer/installers": "~1.0"
     }
 }

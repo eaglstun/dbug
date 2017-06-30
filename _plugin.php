@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*
 Plugin Name: dbug
 Plugin URI: https://wordpress.org/extend/plugins/dbug/

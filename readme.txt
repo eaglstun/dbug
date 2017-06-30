@@ -1,9 +1,9 @@
 === dbug ===
-Contributors: postpostmodern
-Donate link: http://www.heifer.org/
+Contributors: postpostmodern, pinecone-dot-io
+Donate link: https://cash.me/$EricEaglstun
 Tags: debug, error log
 Requires at least: 4.0
-Tested up to: 4.6.1
+Tested up to: 4.8
 Stable tag: trunk
 
 Simple error debugging and logging functions.
@@ -22,6 +22,8 @@ dbug() dlog() ddbug()
 1. Want to dbug and die? Use ddbug()
 
 == Changelog ==
+= 1.9.3 = 
+composer tweaks 
 
 = 1.9.2 = 
 Add composer info, autoload

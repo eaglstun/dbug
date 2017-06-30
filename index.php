@@ -1,16 +1,30 @@
-<?php 
+<?php
 
 namespace WP_Dbug;
 
-if( file_exists(__DIR__.'/vendor/autoload.php') ){
-	require __DIR__.'/vendor/autoload.php';
+/**
+*   PSR-4
+*   @todo detect if composer autoload is being used
+*   @param string
+*/
+function autoload($class)
+{
+    if (strpos($class, __NAMESPACE__) !== 0) {
+        return;
+    }
+  
+    $file = __DIR__ .'/lib/'. str_replace('\\', '/', $class) . '.php';
+    if (file_exists($file)) {
+        require $file;
+    }
 }
+spl_autoload_register( __NAMESPACE__.'\autoload' );
 
-if( is_admin() )
-	require __DIR__.'/admin.php';
-
-require __DIR__.'/functions.php';
-require __DIR__.'/theme.php';
-require __DIR__.'/lib/WP_Dbug/Dbug.php';
+require_once __DIR__.'/functions.php';
+require_once __DIR__.'/theme.php';
 
 Dbug::setup();
+
+if (is_admin()) {
+    new Admin;
+}
