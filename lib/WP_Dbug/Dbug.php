@@ -74,7 +74,7 @@ class Dbug
     *   @param string
     *   @return
     */
-    public static function delog($v, $k = 'DEBUG', $file)
+    public function delog($v, $k = 'DEBUG', $file)
     {
         $now = time();
         
