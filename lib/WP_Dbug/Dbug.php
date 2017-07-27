@@ -4,29 +4,41 @@ namespace WP_Dbug;
 
 class Dbug
 {
-    private static $error_handler = 'screen';   // or 'log'
-    private static $html = '';                  // html echoed for `screen` logging
+
+    protected static $instance = null;
+
+    protected $error_handler = 'screen';   // or 'log'
+    protected $html = '';                  // html echoed for `screen` logging
     
-    private static $LOG_PATH = '';              // absolute path to logs on server
-    private static $LOG_FILESIZE = 1048576;         // in bytes 1048576 = 1 megabyte
+    protected $LOG_PATH = '';              // absolute path to logs on server
+    protected $LOG_FILESIZE = 1048576;         // in bytes 1048576 = 1 megabyte
     
+    public static function instance()
+    {
+        if (!self::$instance) {
+            self::$instance = new self;
+        }
+
+        return self::$instance;
+    }
+
     /**
     *   sets up log path, error handling, admin screens
-    *   @return NULL
+    *   @return
     */
-    public static function setup()
+    protected function __construct()
     {
         // set path to logs
-        self::$LOG_PATH = get_log_path();
-        
+        $this->LOG_PATH = get_log_path();
+
         // set max filesize of logs
-        self::$LOG_FILESIZE = get_log_filesize();
+        $this->LOG_FILESIZE = get_log_filesize();
 
         //
-        self::$error_handler = set_error_handler();
+        $this->error_handler = set_error_handler();
 
         // set default error handling to screen to logs
-        self::set_error_level();
+        $this->set_error_level();
     }
     
     /**
@@ -37,10 +49,10 @@ class Dbug
     *   @param int
     *   @return NULL
     */
-    public static function debug($v, $k, $t = 1)
+    public function debug($v, $k, $t = 1)
     {
         // dont show
-        if (self::$error_handler == 'log') {
+        if ($this->error_handler == 'log') {
             return self::delog( $v, $k, 'dbug' );
         }
         
@@ -49,11 +61,11 @@ class Dbug
         $backtrace = $t ? self::get_backtrace( $t ) : [];
         
         echo render( 'dbug', [
-            'error' => self::$html,
+            'error' => $this->html,
             'backtrace' => $backtrace
         ] );
 
-        self::$html = '';
+        $this->html = '';
     }
     
     /**
@@ -72,7 +84,7 @@ class Dbug
         
         $log = $_SERVER['REQUEST_URI']."\n";
         $log .= date( 'M jS Y h:i:s a', $now )." ( $now ) \n";
-        $log .= strip_tags( str_replace('&nbsp;', ' ', self::$html)). "\n\n";
+        $log .= strip_tags( str_replace('&nbsp;', ' ', $this->html)). "\n\n";
         
         $log = html_entity_decode( $log );
         $log = utf8_decode( $log );
@@ -82,7 +94,7 @@ class Dbug
         }
             
         file_put_contents( self::$LOG_PATH.$file, $log, FILE_APPEND );
-        self::$html = '';
+        $this->html = '';
         
         $m = filesize( self::$LOG_PATH.$file );
         $path = self::$LOG_PATH;
@@ -124,7 +136,7 @@ class Dbug
     *   @param
     *   @return
     */
-    public static function debug_value_html($k, $v, $indent, $hack = false)
+    public function debug_value_html($k, $v, $indent, $hack = false)
     {
         if ($indent > 100) {
             return;
@@ -144,19 +156,19 @@ class Dbug
         self::debug_indent_html( $indent );
         
         if (is_null($v)) {
-            self::$html .= ( htmlentities($k) . " = <strong>Null</strong><br/>\n" );
+            $this->html .= ( htmlentities($k) . " = <strong>Null</strong><br/>\n" );
         } elseif (is_bool($v)) {
-            self::$html .= ( htmlentities($k) . " = <strong>Bool:</strong> [ " . ( $v == true ? 'TRUE' : 'FALSE') . " ]<br/>\n" );
+            $this->html .= ( htmlentities($k) . " = <strong>Bool:</strong> [ " . ( $v == true ? 'TRUE' : 'FALSE') . " ]<br/>\n" );
         } elseif (is_int($v)) {
-            self::$html .= ( htmlentities($k) . " = <strong>Int:</strong> [ $v ]<br/>\n" );
+            $this->html .= ( htmlentities($k) . " = <strong>Int:</strong> [ $v ]<br/>\n" );
         } elseif (is_float($v)) {
-            self::$html .= ( htmlentities($k) . " = <strong>Float:</strong> [ $v ]<br/>\n" );
+            $this->html .= ( htmlentities($k) . " = <strong>Float:</strong> [ $v ]<br/>\n" );
         } elseif (is_string($v)) {
-            self::$html .= $hack ?
+            $this->html .= $hack ?
                            htmlentities($k) ." = [ ". htmlentities($v) ." ]<br/>\n" :
                            htmlentities($k) ." = <strong>String:</strong> [ ". htmlentities($v) ." ]<br/>\n";
         } elseif (is_array($v)) {
-            self::$html .= $hack ?
+            $this->html .= $hack ?
                            htmlentities($k) ."<br/>\n" :
                            htmlentities($k) ." = <strong>Array</strong> containing ". count($v) ." elements:<br/>\n";
                            
@@ -168,12 +180,12 @@ class Dbug
         } elseif (($v_class = get_class($v)) && ($v_class != 'stdClass')) {
             // TODO: figure out a way to make this work.
             // there is a problem with get_class on certain objects...
-            self::$html .= ( $k . " = <strong>Class</strong> $v_class:<br/>\n" );
+            $this->html .= ( $k . " = <strong>Class</strong> $v_class:<br/>\n" );
             
             $RC = new \ReflectionClass( $v );
             
             $properties = $RC->getProperties();
-            self::$html .= count($properties) ." properties:<br/>\n";
+            $this->html .= count($properties) ." properties:<br/>\n";
             foreach ($properties as $k1 => $v1) {
                 $type = get_type($v1);
                 
@@ -188,7 +200,7 @@ class Dbug
             }
             
             $methods = $RC->getMethods();
-            self::$html .= count($methods) ." methods:<br/>\n";
+            $this->html .= count($methods) ." methods:<br/>\n";
             foreach ($methods as $k1 => $v1) {
                 $type = get_type($v1);
                 
@@ -209,7 +221,7 @@ class Dbug
             $vars = (array) $v;
             $count = count( $vars );
             
-            self::$html .= ( $k . " = <strong>Object</strong> with $count elements:<br/>\n" );
+            $this->html .= ( $k . " = <strong>Object</strong> with $count elements:<br/>\n" );
             
             foreach ($vars as $k1 => $v1) {
                 self::debug_value_html( $k1, $v1, ($indent + 5) );
@@ -226,7 +238,7 @@ class Dbug
     {
         if ($indent > 0) {
             for ($x=0; $x<$indent; $x++) {
-                self::$html .= '&nbsp;';
+                $this->html .= '&nbsp;';
             }
         }
     }

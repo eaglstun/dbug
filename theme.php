@@ -14,7 +14,7 @@ function dbug($v = null, $k = null, $trace = 1)
         $k = 'DEBUG';
     }
     
-    WP_Dbug\Dbug::debug( $v, $k, $trace );
+    WP_Dbug\Dbug::instance()->debug( $v, $k, $trace );
     return;
 }
 
@@ -31,7 +31,7 @@ function dlog($v = null, $k = null, $file = 'dlog')
         $k = 'DEBUG';
     }
     
-    WP_Dbug\Dbug::delog( $v, $k, $file );
+    WP_Dbug\Dbug::instance()->delog( $v, $k, $file );
     return;
 }
 
@@ -50,7 +50,7 @@ function ddbug($v = null, $k = null, $trace = 1)
         $k = 'DEBUG';
     }
     
-    WP_Dbug\Dbug::debug( $v, $k, $trace );
+    WP_Dbug\Dbug::instance()->debug( $v, $k, $trace );
     die();
 }
 
@@ -69,6 +69,6 @@ function ddlog($v = null, $k = null, $file = 'dlog')
         $k = 'DEBUG';
     }
     
-    WP_Dbug\Dbug::delog( $v, $k, $file );
+    WP_Dbug\Dbug::instance()->delog( $v, $k, $file );
     die();
 }
