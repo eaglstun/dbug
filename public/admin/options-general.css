@@ -1,0 +1,23 @@
+h2,
+h6 {
+    float: left;
+}
+
+form.dbug {
+    clear: left;
+}
+
+form.dbug label.option {
+    font-weight: bold;
+    display: block;
+    margin: 1em 0 0 0;
+    width: 10em;
+}
+
+marquee {
+    padding-top: 4em;
+}
+
+a.photo {
+    font-size: .6em;
+}
