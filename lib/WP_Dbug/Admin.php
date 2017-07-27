@@ -101,12 +101,12 @@ class Admin
     *   callback for `add_options_page`
     */
     function menu()
-    {   
+    {
         wp_enqueue_style( 'dbug', plugins_url( 'public/admin/options-general.css', dirname(__DIR__) ), [], '' );
         add_filter( 'admin_footer_text', [$this, 'admin_footer_text'] );
 
         $vars = [
-            'path' => plugins_url('public/', dirname(__DIR__))
+            'bug' => plugins_url('public/admin/bug.png', dirname(__DIR__))
         ];
 
         echo render( 'admin/options-general', $vars );
@@ -141,15 +141,10 @@ class Admin
         ];
 
         // stored values
-        $dbug_error_levels = get_option( 'dbug_error_level' );
-
+        $dbug_error_levels = $this->dbug->get_setting('error_level');
+       
         // mereged values
         $dbug_error_levels = is_array($dbug_error_levels) ? $dbug_error_levels + $error_levels : $error_levels;
-        foreach ($dbug_error_levels as $k => $v) {
-            if ((int) $dbug_error_levels[$k] > 0) {
-                $dbug_error_levels[$k] = 'checked="checked"';
-            }
-        }
 
         $vars = [
             'error_level' => $dbug_error_levels
@@ -254,8 +249,8 @@ class Admin
     */
     public function save_setting($settings)
     {
-        //ddbug( $settings );
-
+        $settings['error_level'] = array_map( 'intval', $settings['error_level'] );
+        
         // make sure the path exists and is writable.
         $settings['log_path'] = check_log_dir( $settings['log_path'] );
 
