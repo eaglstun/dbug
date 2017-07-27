@@ -99,29 +99,6 @@ function get_type($r)
 }
 
 /**
-*   gets the max filesize of logs in bytes
-*   @return int
-*/
-function get_log_filesize()
-{
-    $dbug_log_filesize = (int) get_option( 'dbug_log_filesize' );
-    $dbug_log_filesize = $dbug_log_filesize < 1024 ? 1048576 : $dbug_log_filesize;
-    
-    return $dbug_log_filesize;
-}
-
-/**
-*   gets the saved path to log files and creates if doesnt exist
-*   @return string absolute path to directory or FALSE
-*/
-function get_log_path()
-{
-    $path = get_option( 'dbug_log_path' );
-    
-    return check_log_dir( $path );
-}
-
-/**
 *   catch all php errors to log file rather than screen
 *   usually only enabled on production
 *   @param

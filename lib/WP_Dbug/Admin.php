@@ -11,7 +11,7 @@ class Admin
         $this->dbug = $dbug;
 
         add_action( 'admin_menu', [$this, 'admin_menu'] );
-        add_filter( 'plugin_action_links_dbug/_plugin.php', array($this, 'plugin_action_links') );
+        add_filter( 'plugin_action_links_dbug/_plugin.php', [$this, 'plugin_action_links'] );
     }
 
     /**
@@ -34,7 +34,7 @@ class Admin
         add_settings_field(
             'dbug_settings-error-level',
             'Error Level',
-            array($this, 'render_error_level'),
+            [$this, 'render_error_level'],
             'dbug_settings',
             'dbug_settings_section'
         );
@@ -42,7 +42,7 @@ class Admin
         add_settings_field(
             'dbug_settings-error-logging',
             'Error Logging',
-            array($this, 'render_error_logging'),
+            [$this, 'render_error_logging'],
             'dbug_settings',
             'dbug_settings_section'
         );
@@ -50,7 +50,7 @@ class Admin
         add_settings_field(
             'dbug_settings-log-path',
             'Log Path',
-            array($this, 'render_log_path'),
+            [$this, 'render_log_path'],
             'dbug_settings',
             'dbug_settings_section'
         );
@@ -58,7 +58,7 @@ class Admin
         add_settings_field(
             'dbug_settings-log-filesize',
             'Log Size',
-            array($this, 'render_log_filesize'),
+            [$this, 'render_log_filesize'],
             'dbug_settings',
             'dbug_settings_section'
         );
@@ -66,7 +66,7 @@ class Admin
         add_settings_field(
             'dbug_settings-log-files',
             'Log Files',
-            array($this, 'render_log_files'),
+            [$this, 'render_log_files'],
             'dbug_settings',
             'dbug_settings_section'
         );
@@ -90,9 +90,9 @@ class Admin
     */
     function menu()
     {
-        $vars = (object) array(
+        $vars = [
             'path' => plugins_url('public/', dirname(__DIR__))
-        );
+        ];
 
         echo render( 'admin/options-general', $vars );
     }
@@ -117,13 +117,13 @@ class Admin
     public function render_error_level()
     {
         // possible values
-        $error_levels = array(
+        $error_levels = [
             E_WARNING => '',
             E_NOTICE => '',
             E_STRICT => '',
             E_USER_DEPRECATED => '',
             E_ALL => ''
-        );
+        ];
 
         // stored values
         $dbug_error_levels = get_option( 'dbug_error_level' );
@@ -155,7 +155,7 @@ class Admin
             ]
         ];
 
-        if ($selected = get_option('dbug_logging')) {
+        if ($selected = $this->dbug->get_setting('logging')) {
             $vars['logging']->$selected = 'checked="checked"';
         }
 
@@ -168,10 +168,10 @@ class Admin
     public function render_log_files()
     {
         // log file viewer
-        $log_files = array();
-        $log_path = get_log_path();
+        $log_files = [];
+        $log_path = $this->dbug->get_setting('log_path');
 
-        $excluded = array( '.', '..', '.htaccess' );
+        $excluded = [ '.', '..', '.htaccess'];
         
         if ($handle = opendir($log_path)) {
             while (false !== ($entry = readdir($handle))) {
@@ -257,7 +257,7 @@ class Admin
     */
     protected function view_log($log_file)
     {
-        $log_path = get_log_path();
+        $log_path = $this->dbug->get_setting('log_path');
         
         // dont view files outside of logdir
         $file_exists = file_exists( $log_path.$log_file );
@@ -268,11 +268,11 @@ class Admin
             return;
         }
             
-        $vars = (object) array(
+        $vars = [
             'log_content' => file_get_contents( $log_path.$log_file ),
             'log_file' => $log_file
-        );
+        ];
         
-        echo render( 'admin/log_viewer.php', $vars );
+        echo render( 'admin/log_viewer', $vars );
     }
 }

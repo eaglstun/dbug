@@ -7,13 +7,15 @@ class Dbug
 
     protected static $instance = null;
 
-    protected $error_handler = 'screen';   // or 'log'
     protected $html = '';                  // html echoed for `screen` logging
     
-    protected $LOG_PATH = '';              // absolute path to logs on server
-    protected $LOG_FILESIZE = 1048576;         // in bytes 1048576 = 1 megabyte
-    
-    protected $settings = null;
+    protected $settings = [
+        /*
+        'error_handler' => ''               // 'screen' or 'log'
+        'log_filesize' => 1048576           // in bytes 1048576 = 1 megabyte 
+        'log_path' => ''                    // absolute path to logs on server
+        */
+    ];
     
     public static function instance()
     {
@@ -30,12 +32,6 @@ class Dbug
     */
     protected function __construct()
     {
-        // set path to logs
-        $this->LOG_PATH = get_log_path();
-
-        // set max filesize of logs
-        $this->LOG_FILESIZE = get_log_filesize();
-
         //
         $this->error_handler = set_error_handler();
 
@@ -93,17 +89,17 @@ class Dbug
         $log = html_entity_decode( $log );
         $log = utf8_decode( $log );
         
-        if (!file_exists(self::$LOG_PATH.$file)) {
-            touch( self::$LOG_PATH.$file );
+        if (!file_exists($this->settings['log_path'].$file)) {
+            touch( $this->settings['log_path'].$file );
         }
             
-        file_put_contents( self::$LOG_PATH.$file, $log, FILE_APPEND );
+        file_put_contents( $this->settings['log_path'].$file, $log, FILE_APPEND );
         $this->html = '';
         
-        $m = filesize( self::$LOG_PATH.$file );
-        $path = self::$LOG_PATH;
+        $m = filesize( $this->settings['log_path'].$file );
+        $path = $this->settings['log_path'];
         
-        if ($m >= self::$LOG_FILESIZE) {
+        if ($m >= $this->settings['log_filesize']) {
             $i = 1;
             while (file_exists($path.$file."_".$i)) {
                 $i++;
