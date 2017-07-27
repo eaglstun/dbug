@@ -22,6 +22,9 @@ dbug() dlog() ddbug()
 1. Want to dbug and die? Use ddbug()
 
 == Changelog ==
+= 1.9.5 =
+require php 5.4
+
 = 1.9.3 = 
 composer tweaks 
 

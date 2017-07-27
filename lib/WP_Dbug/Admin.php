@@ -6,7 +6,7 @@ class Admin
 {
     public function __construct()
     {
-        add_action( 'admin_menu', array($this, 'admin_menu') );
+        add_action( 'admin_menu', [$this, 'admin_menu'] );
         add_filter( 'plugin_action_links_dbug/_plugin.php', array($this, 'plugin_action_links') );
     }
 
