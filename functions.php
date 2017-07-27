@@ -53,16 +53,6 @@ function check_log_dir($dir)
 }
 
 /**
-*   array_map callback
-*/
-function file_set($e)
-{
-    if (isset($e['file'])) {
-        return $e;
-    }
-}
-
-/**
 *   get the type of method or property.  is there a better way to do this?
 *   @param ReflectionMethod | ReflectionProperty
 *   @return string
@@ -132,21 +122,11 @@ function handle_error_screen($err_no, $err_str, $err_file, $err_line)
 }
 
 /**
-*   register fancy styles for screen
-*   attached to `init` action
-*/
-function register_styles()
-{
-    wp_register_style( 'dbugStyle', plugins_url('public/dbug.css', __FILE__) );
-    wp_enqueue_style( 'dbugStyle' );
-}
-
-/**
 *   render a page into wherever
 *   @param string
 *   @param object|array
 */
-function render($_template, $vars = array())
+function render($_template, $vars = [])
 {
     if (file_exists(__DIR__.'/views/'.$_template.'.php')) {
         $_template_file = __DIR__.'/views/'.$_template.'.php';

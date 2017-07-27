@@ -54,7 +54,7 @@ class Dbug
             return self::delog( $v, $k, 'dbug' );
         }
         
-        self::debug_value_html( $k, $v, 0 );
+        $this->debug_value_html( $k, $v, 0 );
         
         $backtrace = $t ? self::get_backtrace( $t ) : [];
         
@@ -78,7 +78,7 @@ class Dbug
     {
         $now = time();
         
-        self::debug_value_html( $k, $v, 0 );
+        $this->debug_value_html( $k, $v, 0 );
         
         $log = $_SERVER['REQUEST_URI']."\n";
         $log .= date( 'M jS Y h:i:s a', $now )." ( $now ) \n";
@@ -107,6 +107,16 @@ class Dbug
             unlink( $path.$file );
         }
     }
+
+    /**
+    *   array_map callback
+    */
+    function file_set($e)
+    {
+        if (isset($e['file'])) {
+            return $e;
+        }
+    }
     
     /**
     *   removes the `dbug` elements from backtrace
@@ -116,7 +126,7 @@ class Dbug
     public static function get_backtrace($levels = 1)
     {
         $bt = debug_backtrace();
-        $bt = array_map( __NAMESPACE__.'\file_set', $bt );
+        $bt = array_map( [$this,'file_set'], $bt );
         $bt = array_filter( $bt );
         
         if ($bt > 0) {
@@ -143,7 +153,7 @@ class Dbug
     *   @param
     *   @param
     *   @param
-    *   @param
+    *   @param bool
     *   @return
     */
     public function debug_value_html($k, $v, $indent, $hack = false)
@@ -184,8 +194,8 @@ class Dbug
                            
             foreach ($v as $k1 => $v1) {
                 $hack ?
-                self::debug_value_html( $k1, $v1, ( $indent + 5), true ) :
-                self::debug_value_html( $k1, $v1, ( $indent + 5) );
+                $this->debug_value_html( $k1, $v1, ( $indent + 5), true ) :
+                $this->debug_value_html( $k1, $v1, ( $indent + 5) );
             }
         } elseif (($v_class = get_class($v)) && ($v_class != 'stdClass')) {
             // TODO: figure out a way to make this work.
@@ -199,14 +209,14 @@ class Dbug
             foreach ($properties as $k1 => $v1) {
                 $type = get_type($v1);
                 
-                $property_mockup = array();
+                $property_mockup = [];
                 
                 if ($v_class != $v1->class) {
                     $property_mockup['Class:'] = $v1->class;
                 }
                 
                 // TODO: find better way to not use small tags
-                self::debug_value_html( "$".$v1->name." <small>( $type )</small>", $property_mockup, ($indent + 5), true );
+                $this->debug_value_html( "$".$v1->name." <small>( $type )</small>", $property_mockup, ($indent + 5), true );
             }
             
             $methods = $RC->getMethods();
@@ -217,15 +227,15 @@ class Dbug
                 $params = $v1->getParameters();
                 $params = implode( ', ', $params );
                 
-                $method_mockup = array(
+                $method_mockup = [
                     'Parameters' => $params
-                );
+                ];
                 
                 if ($v_class != $v1->class) {
                     $method_mockup['Class:'] = $v1->class;
                 }
                 
-                self::debug_value_html( $v1->name." <small>( $type )</small> ", $method_mockup, ($indent + 5), true );
+                $this->debug_value_html( $v1->name." <small>( $type )</small> ", $method_mockup, ($indent + 5), true );
             }
         } elseif (is_object($v)) {
             $vars = (array) $v;
@@ -234,7 +244,7 @@ class Dbug
             $this->html .= ( $k . " = <strong>Object</strong> with $count elements:<br/>\n" );
             
             foreach ($vars as $k1 => $v1) {
-                self::debug_value_html( $k1, $v1, ($indent + 5) );
+                $this->debug_value_html( $k1, $v1, ($indent + 5) );
             }
         }
     }
@@ -251,6 +261,15 @@ class Dbug
                 $this->html .= '&nbsp;';
             }
         }
+    }
+
+    /**
+    *   register fancy styles for screen
+    *   attached to `init` action
+    */
+    public function register_styles()
+    {
+        wp_enqueue_style( 'dbug', plugins_url( 'public/dbug.css', dirname(__DIR__) ), [], '' );
     }
 
     /**
@@ -275,7 +294,7 @@ class Dbug
 
             case 'screen':
             default:
-                add_action( 'init', __NAMESPACE__.'\register_styles' );
+                add_action( 'init', [$this, 'register_styles'] );
                 \set_error_handler( __NAMESPACE__.'\handle_error_screen', $error_level );
                 return 'screen';
                 break;

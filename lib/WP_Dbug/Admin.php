@@ -21,9 +21,9 @@ class Admin
     */
     public function admin_footer_text($original = '')
     {
-        return render( 'admin/options-general_footer', array(
+        return render( 'admin/options-general_footer', [
             'version' => version()
-        ) );
+        ] );
     }
 
     /**
@@ -102,7 +102,7 @@ class Admin
     */
     function menu()
     {
-        wp_enqueue_style( 'dbug', plugins_url( 'public/admin/options-general.css', dirname(__DIR__) ), [], '' );
+        wp_enqueue_style( 'dbug-admin', plugins_url( 'public/admin/options-general.css', dirname(__DIR__) ), [], '' );
         add_filter( 'admin_footer_text', [$this, 'admin_footer_text'] );
 
         $vars = [
