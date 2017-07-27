@@ -15,6 +15,18 @@ class Admin
     }
 
     /**
+    *
+    *   @param string html
+    *   @return string html
+    */
+    public function admin_footer_text($original = '')
+    {
+        return render( 'admin/options-general_footer', array(
+            'version' => version()
+        ) );
+    }
+
+    /**
     *   setup page for dbug settings
     *   add link to settings page under 'Settings' admin sidebar
     *   update settings from $_POST
@@ -89,7 +101,10 @@ class Admin
     *   callback for `add_options_page`
     */
     function menu()
-    {
+    {   
+        wp_enqueue_style( 'dbug', plugins_url( 'public/admin/options-general.css', dirname(__DIR__) ), [], '' );
+        add_filter( 'admin_footer_text', [$this, 'admin_footer_text'] );
+
         $vars = [
             'path' => plugins_url('public/', dirname(__DIR__))
         ];
@@ -228,6 +243,7 @@ class Admin
                 
             default:
                 $this->menu();
+                break;
         }
     }
 
