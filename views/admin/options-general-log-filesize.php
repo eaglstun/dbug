@@ -1,0 +1,1 @@
+<input name="dbug_settings[log_filesize]" value="<?php echo $log_filesize; ?>"/> ( megabytes )

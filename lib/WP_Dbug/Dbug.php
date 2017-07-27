@@ -13,6 +13,8 @@ class Dbug
     protected $LOG_PATH = '';              // absolute path to logs on server
     protected $LOG_FILESIZE = 1048576;         // in bytes 1048576 = 1 megabyte
     
+    protected $settings = null;
+    
     public static function instance()
     {
         if (!self::$instance) {
@@ -39,6 +41,8 @@ class Dbug
 
         // set default error handling to screen to logs
         $this->set_error_level();
+
+        $this->settings = get_option('dbug_settings');
     }
     
     /**
@@ -126,6 +130,18 @@ class Dbug
         }
         
         return $bt;
+    }
+
+    /**
+    *
+    *   @param string
+    *   @return mixed
+    */
+    public function get_setting($which)
+    {
+        if (array_key_exists($which, $this->settings)) {
+            return $this->settings[$which];
+        }
     }
     
     /**

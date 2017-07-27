@@ -56,6 +56,14 @@ class Admin
         );
 
         add_settings_field(
+            'dbug_settings-log-filesize',
+            'Log Size',
+            array($this, 'render_log_filesize'),
+            'dbug_settings',
+            'dbug_settings_section'
+        );
+
+        add_settings_field(
             'dbug_settings-log-files',
             'Log Files',
             array($this, 'render_log_files'),
@@ -64,36 +72,6 @@ class Admin
         );
 
         register_setting( 'dbug_settings', 'dbug_settings', [$this, 'save_setting'] );
-
-        return;
-
-        // update settings $_POST
-        if (isset($_GET['page']) && $_GET['page'] == 'dbug' && isset($_POST['submit'])) {
-            // remove empty posts
-            $allowed = array( 'dbug_error_level', 'dbug_logging', 'dbug_log_path' );
-            foreach ($allowed as $allow) {
-                if (!isset($_POST[$allow])) {
-                    delete_option( $allow );
-                }
-            }
-        
-            // update dbug_log_path
-            if (isset($_POST['dbug_error_level'])) {
-                update_option( 'dbug_error_level', $_POST['dbug_error_level'] );
-            }
-        
-            // update screen or logs
-            if (isset($_POST['dbug_logging'])) {
-                update_option( 'dbug_logging', $_POST['dbug_logging'] );
-            }
-        
-            // update log filesize
-            if (isset($_POST['dbug_log_filesize'])) {
-                $megabytes = (float) $_POST['dbug_log_filesize'];
-                $bytes = $megabytes * 1024 * 1024;
-                update_option( 'dbug_log_filesize', $bytes );
-            }
-        }
     }
 
     /**
@@ -115,18 +93,7 @@ class Admin
         $vars = (object) array(
             'path' => plugins_url('public/', dirname(__DIR__))
         );
-       
-        
-        
-        if ($selected = get_option( 'dbug_logging')) {
-            $vars->dbug_logging->$selected = 'checked="checked"';
-        }
-        
-        $log_bytes = get_log_filesize();
-        $vars->dbug_log_filesize = $log_bytes / (1024 * 1024);
-        
-        
-        
+
         echo render( 'admin/options-general', $vars );
     }
 
@@ -182,11 +149,15 @@ class Admin
     public function render_error_logging()
     {
         $vars = [
-            'dbug_logging' => (object) [
+            'logging' => (object) [
                 'screen' => '',
                 'log' => ''
             ]
         ];
+
+        if ($selected = get_option('dbug_logging')) {
+            $vars['logging']->$selected = 'checked="checked"';
+        }
 
         echo render( 'admin/options-general-error-logging', $vars );
     }
@@ -214,7 +185,6 @@ class Admin
 
         $vars = [
             'log_files' => $log_files,
-            
         ];
 
         echo render( 'admin/options-general-log-files', $vars );
@@ -223,10 +193,24 @@ class Admin
     /**
     *
     */
+    public function render_log_filesize()
+    {
+        $log_bytes = $this->dbug->get_setting('log_filesize');
+
+        $vars = [
+            'log_filesize' => $log_bytes / (1024 * 1024)
+        ];
+
+        echo render( 'admin/options-general-log-filesize', $vars );
+    }
+
+    /**
+    *
+    */
     public function render_log_path()
     {
         $vars = [
-            'log_path' => get_log_path()
+            'log_path' => $this->dbug->get_setting('log_path')
         ];
 
         echo render( 'admin/options-general-log-path', $vars );
@@ -258,6 +242,12 @@ class Admin
 
         // make sure the path exists and is writable.
         $settings['log_path'] = check_log_dir( $settings['log_path'] );
+
+        // update log filesize
+        $megabytes = (float) $settings['log_filesize'];
+        $settings['log_filesize'] = $megabytes * 1024 * 1024;
+                
+        return $settings;
     }
 
     /**
