@@ -11,8 +11,9 @@ class Dbug
     
     protected $settings = [
         /*
-        'error_handler' => ''               // 'screen' or 'log'
-        'log_filesize' => 1048576           // in bytes 1048576 = 1 megabyte 
+        'error_handler' => '',              // 'screen' or 'log' 
+        'error_level' => 0,                 //
+        'log_filesize' => 1048576,          // in bytes 1048576 = 1 megabyte 
         'log_path' => ''                    // absolute path to logs on server
         */
     ];
@@ -32,13 +33,10 @@ class Dbug
     */
     protected function __construct()
     {
-        //
-        $this->error_handler = set_error_handler();
-
         // set default error handling to screen to logs
-        $this->set_error_level();
-
         $this->settings = get_option('dbug_settings');
+        
+        $this->set_error_handler();
     }
     
     /**
@@ -52,7 +50,7 @@ class Dbug
     public function debug($v, $k, $t = 1)
     {
         // dont show
-        if ($this->error_handler == 'log') {
+        if ($this->get_setting('error_handler') == 'log') {
             return self::delog( $v, $k, 'dbug' );
         }
         
@@ -254,23 +252,33 @@ class Dbug
             }
         }
     }
-    
-    /**
-    *
-    *   @return
-    */
-    private static function set_error_level()
-    {
-        // get the saved error level and calculate val
-        $error_level = 0;
-        $error_levels = get_option( 'dbug_error_level' );
-        
-        if (is_array($error_levels)) {
-            foreach ($error_levels as $e_level) {
-                $error_level = $error_level | $e_level;
-            }
-        }
 
-        // @todo what happends to $error_level ??
+    /**
+    *   whether to output errors or log to file
+    *   @return string 'log' or 'screen'
+    */
+    function set_error_handler()
+    {
+        $error_level = $this->get_setting('error_level');
+        
+        $error_level = array_reduce( $error_level, function ($a, $b) {
+            return $a | intval( $b );
+        }, 0 );
+       
+        $logging = $this->get_setting('error_handler');
+
+        switch ($logging) {
+            case 'log':
+                \set_error_handler( __NAMESPACE__.'\handle_error_log', $error_level );
+                return 'log';
+                break;
+
+            case 'screen':
+            default:
+                add_action( 'init', __NAMESPACE__.'\register_styles' );
+                \set_error_handler( __NAMESPACE__.'\handle_error_screen', $error_level );
+                return 'screen';
+                break;
+        }
     }
 }

@@ -159,14 +159,14 @@ class Admin
     public function render_error_logging()
     {
         $vars = [
-            'logging' => (object) [
+            'error_handler' => (object) [
                 'screen' => '',
                 'log' => ''
             ]
         ];
 
-        if ($selected = $this->dbug->get_setting('logging')) {
-            $vars['logging']->$selected = 'checked="checked"';
+        if ($selected = $this->dbug->get_setting('error_handler')) {
+            $vars['error_handler']->$selected = 'checked="checked"';
         }
 
         echo render( 'admin/options-general-error-logging', $vars );
