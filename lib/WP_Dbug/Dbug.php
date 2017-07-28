@@ -123,7 +123,7 @@ class Dbug
     *   @param int
     *   @return array
     */
-    public static function get_backtrace($levels = 1)
+    public function get_backtrace($levels = 1)
     {
         $bt = debug_backtrace();
         $bt = array_map( [$this,'file_set'], $bt );
@@ -200,7 +200,7 @@ class Dbug
         } elseif (($v_class = get_class($v)) && ($v_class != 'stdClass')) {
             // TODO: figure out a way to make this work.
             // there is a problem with get_class on certain objects...
-            $this->html .= ( $k . " = <strong>Class</strong> $v_class:<br/>\n" );
+            $this->html .= sprintf( "%s = <strong>Class</strong> %s:<br/>\n", $k, $v_class );
             
             $RC = new \ReflectionClass( $v );
             
@@ -239,9 +239,8 @@ class Dbug
             }
         } elseif (is_object($v)) {
             $vars = (array) $v;
-            $count = count( $vars );
             
-            $this->html .= ( $k . " = <strong>Object</strong> with $count elements:<br/>\n" );
+            $this->html .= sprintf( "%s = <strong>Object</strong> with %d elements:<br/>\n", $k, count($vars) );
             
             foreach ($vars as $k1 => $v1) {
                 $this->debug_value_html( $k1, $v1, ($indent + 5) );
@@ -254,7 +253,7 @@ class Dbug
     *   @param int
     *   @return
     */
-    private static function debug_indent_html($indent)
+    protected function debug_indent_html($indent)
     {
         if ($indent > 0) {
             for ($x=0; $x<$indent; $x++) {
@@ -276,7 +275,7 @@ class Dbug
     *   whether to output errors or log to file
     *   @return string 'log' or 'screen'
     */
-    function set_error_handler()
+    protected function set_error_handler()
     {
         $error_level = $this->get_setting('error_level');
         
