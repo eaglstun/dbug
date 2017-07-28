@@ -146,6 +146,38 @@ class Dbug
         if (array_key_exists($which, $this->settings)) {
             return $this->settings[$which];
         }
+
+        switch ($which) {
+            case 'error_handler':
+                $val = get_option( 'dbug_logging' );
+                break;
+
+            case 'error_level':
+                $val = get_option( 'dbug_error_level' );
+                break;
+
+            case 'log_filesize':
+                $val = get_option( 'dbug_log_filesize' );
+                break;
+
+            case 'log_path':
+                $val = get_option( 'dbug_log_path' );
+                break;
+
+            default:
+                $val = false;
+                break;
+        }
+
+        if ($val) {
+            add_action( 'admin_notices', function () {
+                echo '<div class="notice notice-success is-dismissible">
+                        <p>Dbug has been updated - please resave settings</p>
+                      </div>';
+            } );
+
+            return $val;
+        }
     }
     
     /**

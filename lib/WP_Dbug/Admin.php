@@ -257,7 +257,13 @@ class Admin
         // update log filesize
         $megabytes = (float) $settings['log_filesize'];
         $settings['log_filesize'] = $megabytes * 1024 * 1024;
-                
+        
+        // legacy settings
+        delete_option( 'dbug_error_level' );
+        delete_option( 'dbug_log_filesize' );
+        delete_option( 'dbug_log_path' );
+        delete_option( 'dbug_logging' );
+
         return $settings;
     }
 
