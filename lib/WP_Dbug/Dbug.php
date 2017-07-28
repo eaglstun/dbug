@@ -34,7 +34,7 @@ class Dbug
     protected function __construct()
     {
         // set default error handling to screen to logs
-        $this->settings = get_option('dbug_settings');
+        $this->settings = (array) get_option('dbug_settings');
         
         $this->set_error_handler();
     }
@@ -77,7 +77,8 @@ class Dbug
     public function delog($v, $k = 'DEBUG', $file)
     {
         $now = time();
-        
+        $log_path = $this->settings['log_path'];
+
         $this->debug_value_html( $k, $v, 0 );
         
         $log = $_SERVER['REQUEST_URI']."\n";
@@ -87,24 +88,26 @@ class Dbug
         $log = html_entity_decode( $log );
         $log = utf8_decode( $log );
         
-        if (!file_exists($this->settings['log_path'].$file)) {
-            touch( $this->settings['log_path'].$file );
+        if (!file_exists($log_path.$file)) {
+            touch( $log_path.$file );
         }
             
-        file_put_contents( $this->settings['log_path'].$file, $log, FILE_APPEND );
+        file_put_contents( $log_path.$file, $log, FILE_APPEND );
         $this->html = '';
         
-        $m = filesize( $this->settings['log_path'].$file );
-        $path = $this->settings['log_path'];
-        
-        if ($m >= $this->settings['log_filesize']) {
-            $i = 1;
-            while (file_exists($path.$file."_".$i)) {
-                $i++;
+        // copy log file and increment file name
+        if (is_writable($log_path)) {
+            $m = filesize( $log_path.$file );
+
+            if ($m >= $this->settings['log_filesize']) {
+                $i = 1;
+                while (file_exists($path.$file."_".$i)) {
+                    $i++;
+                }
+                
+                copy( $path.$file, $path.$file."_".$i );
+                unlink( $path.$file );
             }
-            
-            copy( $path.$file, $path.$file."_".$i );
-            unlink( $path.$file );
         }
     }
 
