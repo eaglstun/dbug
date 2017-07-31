@@ -6,6 +6,7 @@ if (!function_exists('WP_Dbug\version')) {
     require __DIR__.'/autoload.php';
 }
 
+// dont pollute globals
 call_user_func( function () {
     $dbug = Dbug::instance();
 
