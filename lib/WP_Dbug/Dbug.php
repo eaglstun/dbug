@@ -12,7 +12,7 @@ class Dbug
     protected $settings = [
         /*
         'error_handler' => '',              // 'screen' or 'log' 
-        'error_level' => 0,                 //
+        'error_level' => [0],               //
         'log_filesize' => 1048576,          // in bytes 1048576 = 1 megabyte 
         'log_path' => ''                    // absolute path to logs on server
         */
@@ -33,9 +33,9 @@ class Dbug
     */
     protected function __construct()
     {
-        // set default error handling to screen to logs
         $this->settings = (array) get_option('dbug_settings');
-        
+
+        // set default error handling to screen to logs
         $this->set_error_handler();
     }
     
@@ -149,18 +149,21 @@ class Dbug
         if (array_key_exists($which, $this->settings)) {
             return $this->settings[$which];
         }
-
+       
         switch ($which) {
             case 'error_handler':
                 $val = get_option( 'dbug_logging' );
                 break;
 
             case 'error_level':
-                $val = get_option( 'dbug_error_level' );
+                $val = (array) get_option( 'dbug_error_level' );
                 break;
 
             case 'log_filesize':
-                $val = get_option( 'dbug_log_filesize' );
+                $val = (int)get_option( 'dbug_log_filesize' );
+                if ($val < 1) {
+                    $val = 1048576;
+                }
                 break;
 
             case 'log_path':

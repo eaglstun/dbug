@@ -7,7 +7,7 @@ Description:    Helps with Dev'n
 Domain Path:	/lang
 Plugin URI:     https://github.com/pinecone-dot-website/dbug
 Text Domain:	
-Version:        1.9.5
+Version:        1.9.6
 
 This file must be parsable by php 5.2
 */
