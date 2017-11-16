@@ -76,7 +76,7 @@ class Dbug
     */
     public function delog($v, $k = 'DEBUG', $file)
     {
-        $now = time();
+        $now = current_time( 'timestamp' );
         $log_path = $this->settings['log_path'];
 
         $this->debug_value_html( $k, $v, 0 );
