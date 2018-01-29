@@ -3,7 +3,7 @@ Contributors: postpostmodern, pinecone-dot-io
 Donate link: https://cash.me/$EricEaglstun
 Tags: debug, error log
 Requires at least: 4.0
-Tested up to: 4.8
+Tested up to: 4.9.2
 Stable tag: trunk
 
 Simple error debugging and logging functions.
@@ -22,6 +22,9 @@ dbug() dlog() ddbug()
 1. Want to dbug and die? Use ddbug()
 
 == Changelog ==
+= 1.9.8 =
+change create_function for php >= 7.2
+
 = 1.9.5 =
 require php 5.4
 
